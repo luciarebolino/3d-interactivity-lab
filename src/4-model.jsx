@@ -1,15 +1,25 @@
 import ReactDOM from "react-dom/client";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { useLoader } from "@react-three/fiber";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { Suspense } from "react";
+import { CameraControls, Environment } from "@react-three/drei";
 
 function Scene() {
   const obj = useLoader(OBJLoader, "/chair.obj");
+  const leather = obj.getObjectByName("Leather");
+  const steel = obj.getObjectByName("Steel");
 
   return (
     <Suspense fallback={null}>
-      <primitive object={obj} />
+      <group scale={3} rotation-y={Math.PI}>
+        <primitive object={leather}>
+          <meshStandardMaterial color={"dark grey"} />
+        </primitive>
+        <primitive object={steel}>
+          <meshStandardMaterial color={"chrome"} metalness={1} roughness={0} />
+        </primitive>
+      </group>
     </Suspense>
   );
 }
@@ -17,7 +27,9 @@ function Scene() {
 function App() {
   return (
     <Canvas>
+      <CameraControls makeDefault />
       <Scene />
+      <Environment background="true" preset="city" />
     </Canvas>
   );
 }
